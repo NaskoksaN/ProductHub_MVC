@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using ProductWeb.Data.Configuration;
 using ProductWeb.Models.DataModels;
 
 namespace ProductWeb.Data
@@ -8,8 +9,15 @@ namespace ProductWeb.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {        
         }
+
         public DbSet<Category> Categories { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.ApplyConfiguration(new CategoryConfiguration());
+
+            base.OnModelCreating(modelBuilder);
+        }
 
     }
 }
