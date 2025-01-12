@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Product.Models.DataModels;
+using Product.DataAccess.Entities;
 
 namespace Product.DataAccess.Configuration
 {

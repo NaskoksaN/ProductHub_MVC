@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+
 using Product.DataAccess.Configuration;
-using Product.Models.DataModels;
+using Product.DataAccess.Entities;
 
 namespace Product.DataAccess
 {

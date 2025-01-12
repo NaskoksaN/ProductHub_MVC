@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 using static Product.Models.Constants.DataConstants;
 
-namespace Product.Models.DataModels
+namespace Product.DataAccess.Entities
 {
     public class Category
     {
