@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Product.DataAccess;
-using Product.Models.DataModels;
+using Product.DataAccess.Entities;
 using Product.Models.ViewModels.Catgeroy;
 
 using static Product.Models.Constants.MessageConstants;
