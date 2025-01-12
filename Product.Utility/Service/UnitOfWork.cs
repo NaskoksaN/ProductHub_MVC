@@ -1,7 +1,7 @@
-﻿using Product.DataAccess;
-using Product.Utility.Interface;
+﻿using ProductHub.DataAccess;
+using ProductHub.Utility.Interface;
 
-namespace Product.Utility.Service
+namespace ProductHub.Utility.Service
 {
     public class UnitOfWork : IUnitOfWork
     {

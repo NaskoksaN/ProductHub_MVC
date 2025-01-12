@@ -14,12 +14,15 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Product.DataAccess\Product.DataAccess.csproj" />
-    <ProjectReference Include="..\Product.Models\Product.Models.csproj" />
-    <ProjectReference Include="..\Product.Utility\Product.Utility.csproj" />
+    <Folder Include="Controllers\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Product.Utility\ProductHub.Utility.csproj" />
   </ItemGroup>
 
 </Project>

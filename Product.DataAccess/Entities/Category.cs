@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 
-using static Product.Models.Constants.DataConstants;
+using static ProductHub.Models.Constants.DataConstants;
 
-namespace Product.DataAccess.Entities
+namespace ProductHub.DataAccess.Entities
 {
     public class Category
     {

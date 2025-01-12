@@ -1,7 +1,7 @@
-﻿using Product.DataAccess.Entities;
-using Product.DataAccess.Repository.Interface;
+﻿using ProductHub.DataAccess.Entities;
+using ProductHub.DataAccess.Repository.Interface;
 
-namespace Product.Utility.Interface
+namespace ProductHub.Utility.Interface
 {
     public interface ICategoryService : ISqlRepository<Category>
     {

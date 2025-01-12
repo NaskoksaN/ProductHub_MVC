@@ -1,4 +1,4 @@
-﻿namespace Product.Models
+﻿namespace ProductHub.Models
 {
     public class ErrorViewModel
     {

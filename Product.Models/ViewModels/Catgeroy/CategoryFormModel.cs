@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-using static Product.Models.Constants.DataConstants;
-using static Product.Models.Constants.MessageConstants;
+using static ProductHub.Models.Constants.DataConstants;
+using static ProductHub.Models.Constants.MessageConstants;
 
-namespace Product.Models.ViewModels.Catgeroy
+namespace ProductHub.Models.ViewModels.Catgeroy
 {
     public class CategoryFormModel
     {

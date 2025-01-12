@@ -1,13 +1,14 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Product.DataAccess.Entities;
-using Product.Models.ViewModels.Catgeroy;
-using Product.Utility.Interface;
-using ProductWeb.Areas.Customer.Controllers;
-using static Product.Models.Constants.MessageConstants;
+using ProductHub.DataAccess.Entities;
+using ProductHub.Models.ViewModels.Catgeroy;
+using ProductHub.Utility.Interface;
+using ProductHubWeb.Areas.Customer.Controllers;
+using static ProductHub.Models.Constants.MessageConstants;
 
 
-namespace ProductWeb.Areas.Admin.Controllers
+namespace ProductHubWeb.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class CategoryController : Controller
     {
         private readonly ILogger<HomeController> _logger;

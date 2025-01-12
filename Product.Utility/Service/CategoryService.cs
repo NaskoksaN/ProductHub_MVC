@@ -1,9 +1,9 @@
-﻿using Product.DataAccess;
-using Product.DataAccess.Entities;
-using Product.DataAccess.Repository;
-using Product.Utility.Interface;
+﻿using ProductHub.DataAccess;
+using ProductHub.DataAccess.Entities;
+using ProductHub.DataAccess.Repository;
+using ProductHub.Utility.Interface;
 
-namespace Product.Utility.Service
+namespace ProductHub.Utility.Service
 {
     public class CategoryService :SqlRepository<Category>, ICategoryService
     {

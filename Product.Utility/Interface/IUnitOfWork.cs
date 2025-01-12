@@ -1,4 +1,4 @@
-﻿namespace Product.Utility.Interface
+﻿namespace ProductHub.Utility.Interface
 {
     public interface IUnitOfWork
     {

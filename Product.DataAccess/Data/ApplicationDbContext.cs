@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-using Product.DataAccess.Configuration;
-using Product.DataAccess.Entities;
+using ProductHub.DataAccess.Configuration;
+using ProductHub.DataAccess.Entities;
 
-namespace Product.DataAccess
+
+namespace ProductHub.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {
@@ -12,7 +13,7 @@ namespace Product.DataAccess
         }
 
         public DbSet<Category> Categories { get; set; }
-
+        public DbSet<Product> Products { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new CategoryConfiguration());

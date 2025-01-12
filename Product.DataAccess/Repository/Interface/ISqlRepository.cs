@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace Product.DataAccess.Repository.Interface
+namespace ProductHub.DataAccess.Repository.Interface
 {
     public interface ISqlRepository<T> where T : class
     {

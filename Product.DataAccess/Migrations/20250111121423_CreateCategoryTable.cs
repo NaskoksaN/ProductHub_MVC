@@ -2,7 +2,7 @@
 
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Product.DataAccess.Migrations
+namespace ProductHub.DataAccess.Migrations
 {
     /// <inheritdoc />
     public partial class CreateCategoryTable : Migration

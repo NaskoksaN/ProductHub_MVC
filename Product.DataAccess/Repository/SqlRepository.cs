@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Product.DataAccess.Repository.Interface;
+using ProductHub.DataAccess.Repository.Interface;
 using System.Linq.Expressions;
 
-namespace Product.DataAccess.Repository
+namespace ProductHub.DataAccess.Repository
 {
     public class SqlRepository<T> : ISqlRepository<T> where T : class
     {

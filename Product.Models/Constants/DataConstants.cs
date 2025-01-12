@@ -1,4 +1,4 @@
-﻿namespace Product.Models.Constants
+﻿namespace ProductHub.Models.Constants
 {
     public static class DataConstants
     {
@@ -7,5 +7,8 @@
 
         public const int DipslayOrderMaxValue = 100;
         public const int DisplayOrderMinValue = 1;
+
+        public const int ProductDescriptionMaxLength = 2000;
+        public const int ProductDescriptionMinLength = 1;
     }
 }

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Product.DataAccess;
-using Product.Utility.Interface;
-using Product.Utility.Service;
+using ProductHub.DataAccess;
+using ProductHub.Utility.Interface;
+using ProductHub.Utility.Service;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

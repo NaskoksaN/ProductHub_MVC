@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using Product.DataAccess.Entities;
+using ProductHub.DataAccess.Entities;
 
-namespace Product.DataAccess.Configuration
+namespace ProductHub.DataAccess.Configuration
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {

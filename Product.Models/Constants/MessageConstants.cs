@@ -1,4 +1,4 @@
-﻿namespace Product.Models.Constants
+﻿namespace ProductHub.Models.Constants
 {
     public static class MessageConstants
     {
