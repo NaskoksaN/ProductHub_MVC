@@ -5,18 +5,14 @@ using Product.Utility.Interface;
 
 namespace Product.Utility.Service
 {
-    public class CatgeroyService :SqlRepository<Category>, ICategoryService
+    public class CategoryService :SqlRepository<Category>, ICategoryService
     {
         private readonly ApplicationDbContext db;
-        public CatgeroyService(ApplicationDbContext _db) : base(_db)
+        public CategoryService(ApplicationDbContext _db) : base(_db)
         {
             db = _db;
         }
-        public async Task SaveAsync()
-        {
-            await db.SaveChangesAsync();
-        }
-
+       
         public void Update(Category obj)
         {
             db.Categories.Update(obj);
