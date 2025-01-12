@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Product.DataAccess;
 using Product.DataAccess.Entities;
 using Product.Models.ViewModels.Catgeroy;
-
+using Product.Utility.Interface;
 using static Product.Models.Constants.MessageConstants;
 
 
@@ -12,17 +12,17 @@ namespace ProductWeb.Controllers
     public class CategoryController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly ApplicationDbContext db;
-        public CategoryController(ILogger<HomeController> logger, ApplicationDbContext _db)
+        private readonly ICategoryService categoryService;
+        public CategoryController(ILogger<HomeController> logger, ICategoryService _categoryService)
         {
             _logger = logger;
-            db=_db;
+            categoryService = _categoryService;
         }
 
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Category> categoryList = await db.Categories.ToListAsync();
+            IEnumerable<Category> categoryList = await categoryService.GetAllAsync();
             return View(categoryList);
         }
 
@@ -48,12 +48,12 @@ namespace ProductWeb.Controllers
                 TempData["error"] = ErrorCreated;
                 return View(obj);
             }
-            await db.Categories.AddAsync( new Category()
+            await categoryService.AddAsync( new Category()
             {
                 Name = obj.Name,
                 DisplayOrder = obj.DisplayOrder,
             });
-            await db.SaveChangesAsync();
+            await categoryService.SaveAsync();
 
             TempData["success"]=ItemCreated;
 
@@ -61,24 +61,24 @@ namespace ProductWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if(id == null || id == 0)
             {
                 TempData["error"] = ItemNotFound;
                 return NotFound();
             }
-            Category? categoryFromDb = db.Categories.FirstOrDefault(c => c.Id == id);
-            if(categoryFromDb == null)
+            Category? categoryFromcategoryService = await categoryService.GetAsync(c => c.Id == id);
+            if(categoryFromcategoryService == null)
             {
                 TempData["error"] = ItemNotFound;
                 return NotFound();
             }
             return View(new CategoryFormModel()
             {
-                Id = categoryFromDb.Id,
-                Name = categoryFromDb.Name,
-                DisplayOrder = categoryFromDb.DisplayOrder
+                Id = categoryFromcategoryService.Id,
+                Name = categoryFromcategoryService.Name,
+                DisplayOrder = categoryFromcategoryService.DisplayOrder
             });
         }
 
@@ -98,16 +98,16 @@ namespace ProductWeb.Controllers
                 TempData["error"] = ErrorUpdate;
                 return View(obj);
             }
-            Category? categoryFromDb = db.Categories.FirstOrDefault(c => c.Id == obj.Id);
-            if (categoryFromDb == null)
+            Category? categoryFromcategoryService = await categoryService.GetAsync(c => c.Id == obj.Id);
+            if (categoryFromcategoryService == null)
             {
                 TempData["error"] = ItemNotFound;
                 return NotFound();
             }
-            categoryFromDb.Name = obj.Name;
-            categoryFromDb.DisplayOrder = obj.DisplayOrder;
-            db.Categories.Update(categoryFromDb);
-            await db.SaveChangesAsync();
+            categoryFromcategoryService.Name = obj.Name;
+            categoryFromcategoryService.DisplayOrder = obj.DisplayOrder;
+            categoryService.Update(categoryFromcategoryService);
+            await categoryService.SaveAsync();
 
             TempData["success"] = ItemDelete;
 
@@ -115,36 +115,36 @@ namespace ProductWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || id == 0)
             {
                 TempData["error"] = ItemNotFound;
                 return NotFound();
             }
-            Category? categoryFromDb = db.Categories.FirstOrDefault(c => c.Id == id);
-            if (categoryFromDb == null)
+            Category? categoryFromcategoryService = await categoryService.GetAsync(c => c.Id == id);
+            if (categoryFromcategoryService == null)
             {
                 TempData["error"] = ItemNotFound;
                 return NotFound();
             }
-            return View(categoryFromDb);
+            return View(categoryFromcategoryService);
         }
 
         [HttpPost]
         [ActionName("Delete")]
         public async Task<IActionResult> DeleteConfirmed(int? id)
         {
-            Category? categoryFromDb = db.Categories.FirstOrDefault(c => c.Id == id);
+            Category? categoryFromcategoryService = await categoryService.GetAsync(c => c.Id == id);
                        
-            if (categoryFromDb == null)
+            if (categoryFromcategoryService == null)
             {
                 TempData["error"] = ItemNotFound;
                 return NotFound();
             }
             
-            db.Categories.Remove(categoryFromDb);
-            await db.SaveChangesAsync();
+            categoryService.Remove(categoryFromcategoryService);
+            await categoryService.SaveAsync();
             TempData["success"] = ItemDelete;
 
             return RedirectToAction(nameof(Index));
