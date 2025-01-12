@@ -1,4 +1,4 @@
-﻿namespace ProductWeb.Models.Constants
+﻿namespace Product.Models.Constants
 {
     public static class DataConstants
     {

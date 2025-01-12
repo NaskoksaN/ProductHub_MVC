@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductWeb.Data.Configuration;
-using ProductWeb.Models.DataModels;
+using Product.DataAccess.Configuration;
+using Product.Models.DataModels;
 
-namespace ProductWeb.Data
+namespace Product.DataAccess
 {
     public class ApplicationDbContext : DbContext
     {

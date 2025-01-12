@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProductWeb.Data;
+using Product.DataAccess;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

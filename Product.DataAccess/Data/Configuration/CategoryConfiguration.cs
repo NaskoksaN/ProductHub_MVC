@@ -1,9 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using ProductWeb.Models.DataModels;
-using System.Reflection.Emit;
+using Product.Models.DataModels;
 
-namespace ProductWeb.Data.Configuration
+namespace Product.DataAccess.Configuration
 {
     public class CategoryConfiguration : IEntityTypeConfiguration<Category>
     {

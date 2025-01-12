@@ -1,7 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations;
-using static ProductWeb.Models.DataConstants;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 
-namespace ProductWeb.Models.DataModels
+using static Product.Models.Constants.DataConstants;
+
+namespace Product.Models.DataModels
 {
     public class Category
     {
@@ -9,7 +11,9 @@ namespace ProductWeb.Models.DataModels
         public int Id { get; set; }
         [Required]
         [MaxLength(CategoryNameMaxLength)]
+        [Comment("Category Name")]
         public string Name { get; set; }=string.Empty;
+        [Comment("Display Order")]
         public int DisplayOrder { get; set; }
     }
 }
