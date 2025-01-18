@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using ProductHub.DataAccess.Entities;
 using ProductHub.Models;
+using ProductHub.Utility.Interface;
 using System.Diagnostics;
 
 namespace ProductHubWeb.Areas.Customer.Controllers
@@ -8,15 +10,31 @@ namespace ProductHubWeb.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IUnitOfWork unitOfWork;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,
+                        IUnitOfWork _unitOfWork)
         {
             _logger = logger;
+            this.unitOfWork = _unitOfWork;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            IEnumerable<Product> productList = await unitOfWork
+                                       .ProductService
+                                       .GetAllAsync(includeProperties:"Category");
+
+            return View(productList);
+        }
+
+        public async Task<IActionResult> Details(int productId)
+        {
+            Product product = await unitOfWork
+                                       .ProductService
+                                       .GetAsync(u=> u.Id== productId, includeProperties: "Category");
+
+            return View(product);
         }
 
         public IActionResult Privacy()
