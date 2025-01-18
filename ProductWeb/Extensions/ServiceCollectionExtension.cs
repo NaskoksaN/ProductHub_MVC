@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ProductHub.DataAccess;
+using ProductHub.DataAccess.Data;
 using ProductHub.Utility.Interface;
 using ProductHub.Utility.Service;
 
