@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductHub.DataAccess;
 using ProductHub.DataAccess.Data;
@@ -11,9 +12,11 @@ using ProductHub.DataAccess.Data;
 namespace ProductHub.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250112140155_addForeignKeyForProductcategoryRelation")]
+    partial class addForeignKeyForProductcategoryRelation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -92,10 +95,6 @@ namespace ProductHub.DataAccess.Migrations
                         .HasColumnType("nvarchar(2000)")
                         .HasComment("Product Description");
 
-                    b.Property<string>("ImgUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<int>("MeasurementUnit")
                         .HasColumnType("int")
                         .HasComment("Unit of measurement");
@@ -123,7 +122,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 120,
                             CategoryId = 1,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "Soap1",
                             Price = 1.24
@@ -134,7 +132,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 150,
                             CategoryId = 1,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "Soap2",
                             Price = 1.3999999999999999
@@ -145,7 +142,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 90,
                             CategoryId = 1,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "Soap3",
                             Price = 0.89000000000000001
@@ -156,7 +152,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 140,
                             CategoryId = 1,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "Soap4",
                             Price = 1.3
@@ -167,7 +162,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 70,
                             CategoryId = 3,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "PremiumSoap1",
                             Price = 5.2400000000000002
@@ -178,7 +172,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 60,
                             CategoryId = 3,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "PremiumSoap2",
                             Price = 4.2400000000000002
@@ -189,7 +182,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 90,
                             CategoryId = 3,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "PremiumSoap3",
                             Price = 9.2400000000000002
@@ -200,7 +192,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 40,
                             CategoryId = 3,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 0,
                             Name = "PremiumSoap4",
                             Price = 11.24
@@ -211,7 +202,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 550,
                             CategoryId = 2,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 1,
                             Name = "ShowerGel1",
                             Price = 15.24
@@ -222,7 +212,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 400,
                             CategoryId = 2,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 1,
                             Name = "ShowerGel2",
                             Price = 21.239999999999998
@@ -233,7 +222,6 @@ namespace ProductHub.DataAccess.Migrations
                             Amount = 400,
                             CategoryId = 4,
                             Description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc ac ullamcorper erat. Nullam quis aliquet est, sed faucibus ligula. Phasellus eu diam in sem posuere rhoncus a nec magna.",
-                            ImgUrl = "",
                             MeasurementUnit = 1,
                             Name = "Shampoo",
                             Price = 112.23999999999999
@@ -243,12 +231,17 @@ namespace ProductHub.DataAccess.Migrations
             modelBuilder.Entity("ProductHub.DataAccess.Entities.Product", b =>
                 {
                     b.HasOne("ProductHub.DataAccess.Entities.Category", "Category")
-                        .WithMany()
+                        .WithMany("Products")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("ProductHub.DataAccess.Entities.Category", b =>
+                {
+                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

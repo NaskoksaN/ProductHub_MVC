@@ -1,4 +1,5 @@
 ﻿using ProductHub.DataAccess;
+using ProductHub.DataAccess.Data;
 using ProductHub.Utility.Interface;
 
 namespace ProductHub.Utility.Service
