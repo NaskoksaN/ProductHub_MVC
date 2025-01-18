@@ -15,5 +15,7 @@ namespace ProductHub.DataAccess.Entities
         public string Name { get; set; }=string.Empty;
         [Comment("Display Order")]
         public int DisplayOrder { get; set; }
+
+        //public virtual ICollection<Product> Products { get; set; } = [];
     }
 }
