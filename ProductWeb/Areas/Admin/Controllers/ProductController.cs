@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductHub.DataAccess.Entities;
+using ProductHub.Models.Enums;
 using ProductHub.Models.ViewModels.Product;
 using ProductHub.Utility.Interface;
 using ProductHubWeb.Areas.Customer.Controllers;
@@ -27,7 +28,8 @@ namespace ProductHubWeb.Areas.Admin.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            IEnumerable<Product> productList = await unitOfWork.ProductService.GetAllAsync();
+            IEnumerable<Product> productList = await unitOfWork.
+                    ProductService.GetAllAsync(includeProperties:"Category");
 
             return View(productList);
         }
@@ -71,9 +73,8 @@ namespace ProductHubWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Upsert(ProductVM obj, IFormFile? file)
+        public async Task<IActionResult> Upsert(ProductVM productVM, IFormFile? file)
         {
-            
             if (!ModelState.IsValid)
             {
                 TempData["error"] = ErrorCreated;
@@ -85,22 +86,56 @@ namespace ProductHubWeb.Areas.Admin.Controllers
                                 Text = u.Name,
                                 Value = u.Id.ToString()
                             });
-                obj.CategoryList = CategoryList;
-                return View(obj);
+                productVM.CategoryList = CategoryList;
+                return View(productVM);
             }
             else
             {
-                await unitOfWork.ProductService.AddAsync(new Product()
+                string wwwRootPath = webHostEnvironment.WebRootPath;
+                if (file != null)
                 {
-                    Name = obj.Form.Name,
-                    Description = obj.Form.Description,
-                    Price = obj.Form.Price,
-                    Amount = obj.Form.Amount,
-                    MeasurementUnit = obj.Form.MeasurementUnit,
-                    ImgUrl = obj.Form.ImgUrl,
-                    CategoryId = obj.Form.CategoryId
+                    string fileName = Guid.NewGuid().ToString() 
+                                    + Path.GetExtension(file.FileName);
+                    string productPath = Path.Combine(wwwRootPath, @"images\product");
 
-                });
+                    if (!string.IsNullOrEmpty(productVM.Form.ImgUrl))
+                    {
+                        var oldImagePath = 
+                            Path.Combine(wwwRootPath,productVM.Form.ImgUrl.TrimStart('\\'));
+                        if (System.IO.File.Exists(oldImagePath))
+                        {
+                            System.IO.File.Delete(oldImagePath);
+                        }
+                    }
+
+                    using (FileStream fileStream = new (Path.Combine(productPath, fileName),FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+
+                    productVM.Form.ImgUrl = @"\images\product\" + fileName;
+                }
+                if(productVM.Form.Id==null || productVM.Form.Id==0)
+                {
+                    await unitOfWork.ProductService.AddAsync(new Product()
+                    {
+                        Name = productVM.Form.Name,
+                        Description = productVM.Form.Description,
+                        Price = productVM.Form.Price,
+                        Amount = productVM.Form.Amount,
+                        MeasurementUnit = productVM.Form.MeasurementUnit,
+                        ImgUrl = productVM.Form.ImgUrl,
+                        CategoryId = productVM.Form.CategoryId
+
+                    });
+                }
+                else
+                {
+                    
+
+                    unitOfWork.ProductService.Update(productVM.Form);
+                }
+                
                 await unitOfWork.SaveAsync();
 
                 TempData["success"] = ItemCreated;
@@ -110,41 +145,42 @@ namespace ProductHubWeb.Areas.Admin.Controllers
             
         }
 
+        #region API CALLS
+
         [HttpGet]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> GetAll()
         {
-            if (id == null || id == 0)
-            {
-                TempData["error"] = ItemNotFound;
-                return NotFound();
-            }
-            Product? productFromDb = await unitOfWork.ProductService.GetAsync(c => c.Id == id);
-            if (productFromDb == null)
-            {
-                TempData["error"] = ItemNotFound;
-                return NotFound();
-            }
-            return View(productFromDb);
+            IEnumerable<Product> productList = await unitOfWork.
+                    ProductService.GetAllAsync(includeProperties: "Category");
+
+            return Json(new {data= productList });
         }
 
-        [HttpPost]
-        [ActionName("Delete")]
-        public async Task<IActionResult> DeleteConfirmed(int? id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
         {
-            Product? productFromDb = await unitOfWork.ProductService.GetAsync(c => c.Id == id);
-
-            if (productFromDb == null)
+            Product productToBeDeleted = await unitOfWork
+                .ProductService.GetAsync (c => c.Id == id);
+            if (productToBeDeleted == null)
             {
-                TempData["error"] = ItemNotFound;
-                return NotFound();
+                return Json(new {success=false, message="Error while deleting"});
+            }
+            var oldImagePath =
+                            Path.Combine(webHostEnvironment.WebRootPath,
+                            productToBeDeleted.ImgUrl.TrimStart('\\'));
+            if (System.IO.File.Exists(oldImagePath))
+            {
+                System.IO.File.Delete(oldImagePath);
             }
 
-            unitOfWork.ProductService.Remove(productFromDb);
+            unitOfWork.ProductService.Remove(productToBeDeleted);
             await unitOfWork.SaveAsync();
-            TempData["success"] = ItemDelete;
 
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true, message = "Delete Successful" });
+
         }
+
+        #endregion
     }
 
 }
