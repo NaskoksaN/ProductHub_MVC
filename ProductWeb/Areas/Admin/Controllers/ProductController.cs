@@ -14,10 +14,14 @@ namespace ProductHubWeb.Areas.Admin.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork unitOfWork;
-        public ProductController(ILogger<HomeController> logger, IUnitOfWork _unitOfWork)
+        private readonly IWebHostEnvironment webHostEnvironment;
+        public ProductController(ILogger<HomeController> logger, 
+                IUnitOfWork _unitOfWork,
+                IWebHostEnvironment _webHostEnvironment)
         {
             _logger = logger;
             unitOfWork = _unitOfWork;
+            webHostEnvironment = _webHostEnvironment;
         }
 
         [HttpGet]
