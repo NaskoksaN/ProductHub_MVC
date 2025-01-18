@@ -3,6 +3,7 @@
     public interface IUnitOfWork
     {
         ICategoryService CategoryService { get;}
+        IProductService ProductService { get;}
         Task SaveAsync();
     }
 }
