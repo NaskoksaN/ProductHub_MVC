@@ -5,8 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 builder.Services.AddApplicationDbContext(builder.Configuration);
+builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddApplicationService();
 
 var app = builder.Build();
@@ -24,18 +26,18 @@ app.UseStaticFiles();
 
 app.UseRouting();
 //show routing 
-//app.Use(async (context, next) =>
-//{
-//    var endpoint = context.GetEndpoint();
-//    Console.WriteLine("==--=============================================================================");
-//    Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
-//    Console.WriteLine("==--=============================================================================");
-//    await next();
-//});
+app.Use(async (context, next) =>
+{
+    var endpoint = context.GetEndpoint();
+Console.WriteLine("==--=============================================================================");
+Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
+Console.WriteLine("==--=============================================================================");
+await next();
+});
 
-
-
+app.UseAuthentication();
 app.UseAuthorization();
+app.MapRazorPages();
 
 app.MapControllerRoute(
     name: "default",
