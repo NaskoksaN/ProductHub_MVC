@@ -1,16 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductHub.DataAccess.Entities;
-using ProductHub.Models.Enums;
 using ProductHub.Models.ViewModels.Product;
 using ProductHub.Utility.Interface;
 using ProductHubWeb.Areas.Customer.Controllers;
 
 using static ProductHub.Models.Constants.MessageConstants;
+using static ProductHub.Models.Constants.SDRoles;
 
 namespace ProductHubWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles = Role_Admin)]
     public class ProductController : Controller
     {
         private readonly ILogger<HomeController> _logger;
