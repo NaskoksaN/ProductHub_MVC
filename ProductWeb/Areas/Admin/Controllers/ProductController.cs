@@ -12,7 +12,7 @@ using static ProductHub.Models.Constants.SDRoles;
 namespace ProductHubWeb.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = Role_Admin)]
+    //[Authorize(Roles = Role_Admin)]
     public class ProductController : Controller
     {
         private readonly ILogger<HomeController> _logger;
