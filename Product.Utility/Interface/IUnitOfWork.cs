@@ -4,6 +4,8 @@
     {
         ICategoryService CategoryService { get;}
         IProductService ProductService { get;}
+
+        ICompanyService CompanyService { get; }
         Task SaveAsync();
     }
 }

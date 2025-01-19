@@ -12,11 +12,13 @@ namespace ProductHub.Utility.Service
 
         public IProductService ProductService { get; private set; }
 
+        public ICompanyService CompanyService { get; private set; }
         public UnitOfWork(ApplicationDbContext _db) 
         {
             db = _db;
             CategoryService = new CategoryService(_db);
             ProductService = new ProductService(_db);
+            CompanyService = new CompanyService(_db);
         }
 
         public async Task SaveAsync()
