@@ -1,10 +1,8 @@
-﻿using ProductHub.DataAccess;
-using ProductHub.DataAccess.Data;
+﻿using ProductHub.DataAccess.Data;
 using ProductHub.DataAccess.Entities;
 using ProductHub.DataAccess.Repository;
-using ProductHub.Models.ViewModels.Product;
 using ProductHub.Utility.Interface;
-using System.Drawing.Printing;
+using ProductHub.Utility.ViewModels.Product;
 
 namespace ProductHub.Utility.Service
 {

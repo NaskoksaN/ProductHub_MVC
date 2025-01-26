@@ -1,6 +1,6 @@
 ﻿using ProductHub.DataAccess.Entities;
 using ProductHub.DataAccess.Repository.Interface;
-using ProductHub.Models.ViewModels.Product;
+using ProductHub.Utility.ViewModels.Product;
 
 namespace ProductHub.Utility.Interface
 {
