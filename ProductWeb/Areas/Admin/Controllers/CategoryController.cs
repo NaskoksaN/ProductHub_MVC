@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductHub.DataAccess.Entities;
-using ProductHub.Models.ViewModels.Catgeroy;
+using ProductHub.Utility.ViewModels.Catgeroy;
 using ProductHub.Utility.Interface;
 using ProductHubWeb.Areas.Customer.Controllers;
 

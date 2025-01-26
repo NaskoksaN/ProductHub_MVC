@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductHub.DataAccess.Entities;
-using ProductHub.Models.ViewModels.Product;
+using ProductHub.Utility.ViewModels.Product;
 using ProductHub.Utility.Interface;
 using ProductHubWeb.Areas.Customer.Controllers;
 
