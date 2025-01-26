@@ -11,8 +11,8 @@ function loadDataTable() {
             { data: 'name', "width":"20%" },
             { data: 'vat', "width": "10%" },
             { data: 'postalCode', "width": "10%" },
-            { data: 'city', "width": "5%" },
-            { data: 'phoneNumber', "width": "15%" },
+            { data: 'city', "width": "25%" },
+            { data: 'phoneNumber', "width": "10%" },
             {
                 data: "id",
                 "render": function (data) {
@@ -25,7 +25,7 @@ function loadDataTable() {
                                 </a>
                             </div>`
                 },
-                "width": "25%"
+                "width": "20%"
             }
         ]
     });
