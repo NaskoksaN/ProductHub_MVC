@@ -6,7 +6,7 @@ namespace ProductHub.DataAccess.Repository.Interface
     {
         Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter, 
                         string? includeProperties = null);
-        Task<T> GetAsync(Expression<Func<T, bool>> filter, 
+        Task<T> GetAsync(Expression<Func<T, bool>> filter=null, 
                         string? includeProperties = null, 
                         bool tracked=false);
         Task AddAsync(T entity);
