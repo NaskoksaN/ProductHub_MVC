@@ -20,11 +20,14 @@ namespace ProductHub.DataAccess.Repository
            await dbSet.AddAsync(entity);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter, 
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>>? filter, 
                                                             string? includeProperties=null)
         {
             IQueryable<T> query = dbSet;
-            query = query.Where(filter);
+            if (filter != null)
+            {
+                query = query.Where(filter);
+            }
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProp in includeProperties
