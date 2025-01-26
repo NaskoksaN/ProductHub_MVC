@@ -20,10 +20,11 @@ namespace ProductHub.DataAccess.Repository
            await dbSet.AddAsync(entity);
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync(string? includeProperties=null)
+        public async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> filter, 
+                                                            string? includeProperties=null)
         {
             IQueryable<T> query = dbSet;
-
+            query = query.Where(filter);
             if (!string.IsNullOrEmpty(includeProperties))
             {
                 foreach (var includeProp in includeProperties
@@ -36,9 +37,12 @@ namespace ProductHub.DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>> filter, string? includeProperties = null)
+        public async Task<T> GetAsync(Expression<Func<T, bool>> filter, 
+                string? includeProperties = null,
+                bool tracked = false)
         {
-            IQueryable<T> query = dbSet;
+            IQueryable<T> query;
+            query = tracked ? dbSet : dbSet.AsNoTracking();
             query = query.Where(filter);
             if (!string.IsNullOrEmpty(includeProperties))
             {
