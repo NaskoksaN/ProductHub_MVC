@@ -15,5 +15,7 @@
         public const string ErrorUpdate = "Item is update successfully.";
         public const string ErrorDelete = "Item is delete successfully.";
         public const string ItemNotFound = "Item not found";
+
+        public const string CartSuccessMsg = "Cart was update successefully!";
     }
 }

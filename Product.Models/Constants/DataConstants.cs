@@ -24,10 +24,10 @@
         public const int NameMinLength = 1;
 
         public const int StreetMaxLength = 150;
-        public const int ApplicationUserStreetMinLength = 1;
+        public const int StreetMinLength = 1;
 
         public const int CityMaxLength = 70;
-        public const int ApplicationUserCityMinLength = 1;
+        public const int CityMinLength = 1;
 
         public const int PostCodeMaxLength = 20;
         public const int PostCodeMinLength = 1;
@@ -37,5 +37,8 @@
 
         public const int VATMaxLength = 20;
         public const int VATMinLength = 1;
+
+        public const int ProductMaxCount = 5000;
+        public const int ProductMinCount = 1;
     }
 }
