@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
-
+using System.ComponentModel.DataAnnotations.Schema;
 using static ProductHub.Models.Constants.DataConstants;
 
 namespace ProductHub.DataAccess.Entities
@@ -24,5 +24,9 @@ namespace ProductHub.DataAccess.Entities
         [MaxLength(PostCodeMaxLength)]
         [Comment("User postal code")]
         public string? PostalCode {  get; set; }
+
+        public int? CompanyId {  get; set; }
+        [ForeignKey(nameof(CompanyId))]
+        public Company? Company { get; set; }
     }
 }

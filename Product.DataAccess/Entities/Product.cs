@@ -29,7 +29,7 @@ namespace ProductHub.DataAccess.Entities
         public int Amount {  get; set; }
 
         [Comment("Unit of measurement")]
-        public MeasurementUnit MeasurementUnit { get; set; } 
+        public MeasurementUnit MeasurementUnit { get; set; }
 
         public string ImgUrl { get; set; }
         public int CategoryId {  get; set; }
