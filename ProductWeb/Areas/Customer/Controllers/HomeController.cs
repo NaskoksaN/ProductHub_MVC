@@ -1,8 +1,13 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProductHub.DataAccess.Entities;
 using ProductHub.Models;
 using ProductHub.Utility.Interface;
+using ProductHub.Utility.ViewModels.ShopingCart;
 using System.Diagnostics;
+using System.Security.Claims;
+
+using static ProductHub.Models.Constants.MessageConstants;
 
 namespace ProductHubWeb.Areas.Customer.Controllers
 {
@@ -30,11 +35,53 @@ namespace ProductHubWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> Details(int productId)
         {
-            Product product = await unitOfWork
-                                       .ProductService
-                                       .GetAsync(u=> u.Id== productId, includeProperties: "Category");
 
-            return View(product);
+            ShopingCartFormModel cart = new()
+            {
+                Product = await unitOfWork
+                                       .ProductService
+                                       .GetAsync(u => u.Id == productId, includeProperties: "Category"),
+                Count=1,
+                ProductId=productId
+            };
+
+            return View(cart);
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> Details(ShopingCartFormModel shopingCartFormModel)
+        {
+            var claimsIdentity = (ClaimsIdentity?)User?.Identity;
+            var userId = claimsIdentity?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            ShopingCart cartFromDb = await unitOfWork
+                    .ShopingCartService
+                    .GetAsync(u => u.ApplicationUserId == userId &&
+                                  u.ProductId == shopingCartFormModel.ProductId);
+
+            if (cartFromDb != null)
+            {
+                cartFromDb.Count+=shopingCartFormModel.Count;
+                unitOfWork.ShopingCartService.Update(cartFromDb);
+            }
+            else
+            {
+                ShopingCart shopingCart = new()
+                {
+                    ProductId = shopingCartFormModel.ProductId,
+                    ApplicationUserId = userId,
+                    Count = shopingCartFormModel.Count,
+                    
+                };
+                await unitOfWork.ShopingCartService.AddAsync(shopingCart);
+            }
+
+           
+            await unitOfWork.SaveAsync();
+            TempData["success"] = CartSuccessMsg;
+
+            return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Privacy()
