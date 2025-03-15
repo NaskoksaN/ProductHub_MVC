@@ -7,6 +7,8 @@
         IShopingCartService ShopingCartService { get;}
         ICompanyService CompanyService { get; }
         IApplicationUserRepository ApplicationUserRepository { get; }
+        IOrderDetailService OrderDetailService { get; }
+        IOrderHeaderService OrderHeaderService { get; }
         Task SaveAsync();
     }
 }
