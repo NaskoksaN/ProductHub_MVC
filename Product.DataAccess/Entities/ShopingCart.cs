@@ -29,5 +29,8 @@ namespace ProductHub.DataAccess.Entities
         public string ApplicationUserId { get; set; } = string.Empty;
         [ForeignKey(nameof(ApplicationUserId))]
         public ApplicationUser ApplicationUser { get; set; } = null!;
+
+        [NotMapped]
+        public double Price {  get; set; }
     }
 }
