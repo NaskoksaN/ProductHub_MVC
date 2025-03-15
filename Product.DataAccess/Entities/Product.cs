@@ -31,6 +31,7 @@ namespace ProductHub.DataAccess.Entities
         [Comment("Unit of measurement")]
         public MeasurementUnit MeasurementUnit { get; set; }
 
+        [Comment("Img Url")]
         public string ImgUrl { get; set; }
         public int CategoryId {  get; set; }
         [ForeignKey(nameof(CategoryId))]
