@@ -16,7 +16,7 @@ namespace ProductHub.Utility.Service
 
         public IShopingCartService ShopingCartService { get; private set; }
 
-        public IApplicationUserService ApplicationUserService { get; private set; }
+        public IApplicationUserRepository ApplicationUserRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext _db) 
         {
@@ -25,7 +25,7 @@ namespace ProductHub.Utility.Service
             ProductService = new ProductService(_db);
             CompanyService = new CompanyService(_db);
             ShopingCartService = new ShopingCartService(_db);
-            ApplicationUserService = new ApplicationUserService(_db);
+            ApplicationUserRepository = new ApplicationUserRepository(_db);
         }
 
         public async Task SaveAsync()
