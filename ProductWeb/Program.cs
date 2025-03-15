@@ -1,6 +1,3 @@
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using ProductHub.DataAccess.Data;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -26,14 +23,14 @@ app.UseStaticFiles();
 
 app.UseRouting();
 //show routing 
-app.Use(async (context, next) =>
-{
-    var endpoint = context.GetEndpoint();
-Console.WriteLine("==--=============================================================================");
-Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
-Console.WriteLine("==--=============================================================================");
-await next();
-});
+//app.Use(async (context, next) =>
+//{
+//    var endpoint = context.GetEndpoint();
+//Console.WriteLine("==--=============================================================================");
+//Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
+//Console.WriteLine("==--=============================================================================");
+//await next();
+//});
 
 app.UseAuthentication();
 app.UseAuthorization();
