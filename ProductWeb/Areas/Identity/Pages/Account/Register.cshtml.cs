@@ -12,9 +12,11 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using ProductHub.DataAccess.Entities;
+using ProductHub.Utility.Interface;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
 using System.Text.Encodings.Web;
+
 
 using static ProductHub.Models.Constants.SDRoles;
 
@@ -22,6 +24,7 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
 {
     public class RegisterModel : PageModel
     {
+        private readonly IUnitOfWork unitOfWork;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -31,6 +34,7 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
         private readonly IEmailSender _emailSender;
 
         public RegisterModel(
+            IUnitOfWork _unitOfWork,
             RoleManager<IdentityRole> roleManager,
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
@@ -38,6 +42,7 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
             ILogger<RegisterModel> logger,
             IEmailSender emailSender)
         {
+            unitOfWork = _unitOfWork;
             _roleManager = roleManager;
             _userManager = userManager;
             _userStore = userStore;
@@ -101,15 +106,15 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
 
 
-            public string? Role {  get; set; }
+            public string? Role { get; set; }
             [ValidateNever]
             public IEnumerable<SelectListItem> RoleList { get; set; }
 
             [Required]
-            [Display(Name ="User Full Name")]
-            public string Name {  get; set; }=string.Empty;
+            [Display(Name = "User Full Name")]
+            public string Name { get; set; } = string.Empty;
 
-            [Display(Name ="Street Address")]
+            [Display(Name = "Street Address")]
             public string? StreetAddress { get; set; }
             public string? City { get; set; }
 
@@ -117,6 +122,9 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
             public string? PostalCode { get; set; }
             [Display(Name = "Phone Number")]
             public string? PhoneNumber { get; set; }
+            public int? CompanyId { get; set; }
+            [ValidateNever]
+            public IEnumerable<SelectListItem> CompanyList { get; set; }
         }
 
 
@@ -131,11 +139,22 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
             }
             Input = new()
             {
-                RoleList = _roleManager.Roles.Select(x => x.Name).Select(i => new SelectListItem
-                {
-                    Text = i,
-                    Value = i,
-                })
+                RoleList = _roleManager
+                        .Roles
+                        .Select(x => x.Name)
+                        .Select(i => new SelectListItem
+                        {
+                            Text = i,
+                            Value = i,
+                        }),
+                CompanyList = (await unitOfWork
+                        .CompanyService
+                        .GetAllAsync())
+                        .Select(i => new SelectListItem
+                        {
+                            Text = i.Name,
+                            Value = i.Id.ToString(),
+                        }).ToList()
             };
 
             ReturnUrl = returnUrl;
@@ -153,11 +172,15 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
                 await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
 
-                user.Name=Input.Name;
-                user.StreetAddress= Input.StreetAddress;
-                user.City= Input.City;
-                user.PostalCode= Input.PostalCode;
-                user.PhoneNumber= Input.PhoneNumber;
+                user.Name = Input.Name;
+                user.StreetAddress = Input.StreetAddress;
+                user.City = Input.City;
+                user.PostalCode = Input.PostalCode;
+                user.PhoneNumber = Input.PhoneNumber;
+                if (Input.Role == Role_Company)
+                {
+                    user.CompanyId = Input.CompanyId;
+                }
 
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
