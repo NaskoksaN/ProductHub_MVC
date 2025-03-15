@@ -21,6 +21,6 @@ namespace ProductHub.Utility.ViewModels.ShopingCart
 
         [Required]
         public string ApplicationUserId { get; set; } = string.Empty;
-        
+
     }
 }
