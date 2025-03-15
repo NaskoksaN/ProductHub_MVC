@@ -40,7 +40,7 @@ namespace ProductHub.DataAccess.Repository
             return await query.ToListAsync();
         }
 
-        public async Task<T> GetAsync(Expression<Func<T, bool>> filter, 
+        public async Task<T> GetAsync(Expression<Func<T, bool>> filter,
                 string? includeProperties = null,
                 bool tracked = false)
         {
@@ -55,7 +55,7 @@ namespace ProductHub.DataAccess.Repository
                     query = query.Include(includeProp);
                 }
             }
-
+          
             return await query.FirstOrDefaultAsync();
         }
 
