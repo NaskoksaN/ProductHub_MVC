@@ -55,16 +55,19 @@ namespace ProductHub.DataAccess.Entities
         [Comment("User full name")]
         public string Name { get; set; } = string.Empty;
 
+        [Comment("Phone Number")]
+        public string PhoneNumber { get; set; } = null!;
+
         [MaxLength(StreetMaxLength)]
         [Comment("User street address")]
-        public string? StreetAddress { get; set; }
+        public string StreetAddress { get; set; } = null!;
 
         [MaxLength(CityMaxLength)]
         [Comment("User city")]
-        public string? City { get; set; }
+        public string City { get; set; } = null!;
 
         [MaxLength(PostCodeMaxLength)]
         [Comment("User postal code")]
-        public string? PostalCode { get; set; }
+        public string PostalCode { get; set; } = null!;
     }
 }
