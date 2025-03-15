@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductHub.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using ProductHub.DataAccess.Data;
 namespace ProductHub.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250119090347_addIdentityTables")]
+    partial class addIdentityTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -86,11 +89,6 @@ namespace ProductHub.DataAccess.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired()
-                        .HasMaxLength(21)
-                        .HasColumnType("nvarchar(21)");
-
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -142,10 +140,6 @@ namespace ProductHub.DataAccess.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
-
-                    b.HasDiscriminator().HasValue("IdentityUser");
-
-                    b.UseTphMappingStrategy();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -176,10 +170,12 @@ namespace ProductHub.DataAccess.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -216,10 +212,12 @@ namespace ProductHub.DataAccess.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasMaxLength(128)
+                        .HasColumnType("nvarchar(128)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -275,84 +273,6 @@ namespace ProductHub.DataAccess.Migrations
                             Id = 4,
                             DisplayOrder = 4,
                             Name = "Shampoo"
-                        });
-                });
-
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasComment("Company Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("City")
-                        .HasMaxLength(70)
-                        .HasColumnType("nvarchar(70)")
-                        .HasComment("Company City");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasComment("Company Name");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("Company Phone Number");
-
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("Company Postal Code");
-
-                    b.Property<string>("StreetAddress")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasComment("Company Street Address");
-
-                    b.Property<string>("VAT")
-                        .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("Company VAT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Varna",
-                            Name = "Nasko Bobchev Ltd",
-                            PhoneNumber = "0012312334",
-                            PostalCode = "BG 9000",
-                            StreetAddress = "jk Pobeda, str Todor radev Penev 7 - ap16",
-                            VAT = "BG41023450"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Haskovo",
-                            Name = "Nasko  Ltd",
-                            PhoneNumber = "0023312334",
-                            PostalCode = "BG 6300",
-                            StreetAddress = "str Gurgulqt 2, ent.B , app58",
-                            VAT = "BG41023123"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            City = "selo Kukovica",
-                            Name = "Mega company Ltd",
-                            PhoneNumber = "01223312334",
-                            PostalCode = "BG 1300",
-                            StreetAddress = "str GPetko petkov 12",
-                            VAT = "BG41034123"
                         });
                 });
 
@@ -525,69 +445,6 @@ namespace ProductHub.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ShopingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasComment("Order Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int")
-                        .HasComment("Count of product");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
-                        .HasComment("Product id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ShopingCarts");
-                });
-
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ApplicationUser", b =>
-                {
-                    b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
-
-                    b.Property<string>("City")
-                        .HasMaxLength(70)
-                        .HasColumnType("nvarchar(70)")
-                        .HasComment("User city");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
-                        .HasComment("User full name");
-
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
-                        .HasComment("User postal code");
-
-                    b.Property<string>("StreetAddress")
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)")
-                        .HasComment("User street address");
-
-                    b.HasIndex("CompanyId");
-
-                    b.HasDiscriminator().HasValue("ApplicationUser");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -648,34 +505,6 @@ namespace ProductHub.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ShopingCart", b =>
-                {
-                    b.HasOne("ProductHub.DataAccess.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductHub.DataAccess.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("ProductHub.DataAccess.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }

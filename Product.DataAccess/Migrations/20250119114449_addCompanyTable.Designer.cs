@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ProductHub.DataAccess.Data;
 
@@ -11,9 +12,11 @@ using ProductHub.DataAccess.Data;
 namespace ProductHub.DataAccess.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250119114449_addCompanyTable")]
+    partial class addCompanyTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -322,38 +325,6 @@ namespace ProductHub.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Companies");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            City = "Varna",
-                            Name = "Nasko Bobchev Ltd",
-                            PhoneNumber = "0012312334",
-                            PostalCode = "BG 9000",
-                            StreetAddress = "jk Pobeda, str Todor radev Penev 7 - ap16",
-                            VAT = "BG41023450"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            City = "Haskovo",
-                            Name = "Nasko  Ltd",
-                            PhoneNumber = "0023312334",
-                            PostalCode = "BG 6300",
-                            StreetAddress = "str Gurgulqt 2, ent.B , app58",
-                            VAT = "BG41023123"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            City = "selo Kukovica",
-                            Name = "Mega company Ltd",
-                            PhoneNumber = "01223312334",
-                            PostalCode = "BG 1300",
-                            StreetAddress = "str GPetko petkov 12",
-                            VAT = "BG41034123"
-                        });
                 });
 
             modelBuilder.Entity("ProductHub.DataAccess.Entities.Product", b =>
@@ -525,36 +496,6 @@ namespace ProductHub.DataAccess.Migrations
                         });
                 });
 
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ShopingCart", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasComment("Order Id");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Count")
-                        .HasColumnType("int")
-                        .HasComment("Count of product");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int")
-                        .HasComment("Product id");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ApplicationUserId");
-
-                    b.HasIndex("ProductId");
-
-                    b.ToTable("ShopingCarts");
-                });
-
             modelBuilder.Entity("ProductHub.DataAccess.Entities.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -563,9 +504,6 @@ namespace ProductHub.DataAccess.Migrations
                         .HasMaxLength(70)
                         .HasColumnType("nvarchar(70)")
                         .HasComment("User city");
-
-                    b.Property<int?>("CompanyId")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -582,8 +520,6 @@ namespace ProductHub.DataAccess.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)")
                         .HasComment("User street address");
-
-                    b.HasIndex("CompanyId");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
@@ -648,34 +584,6 @@ namespace ProductHub.DataAccess.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
-                });
-
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ShopingCart", b =>
-                {
-                    b.HasOne("ProductHub.DataAccess.Entities.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ProductHub.DataAccess.Entities.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("ApplicationUser");
-
-                    b.Navigation("Product");
-                });
-
-            modelBuilder.Entity("ProductHub.DataAccess.Entities.ApplicationUser", b =>
-                {
-                    b.HasOne("ProductHub.DataAccess.Entities.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId");
-
-                    b.Navigation("Company");
                 });
 #pragma warning restore 612, 618
         }
