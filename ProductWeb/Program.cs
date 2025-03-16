@@ -11,8 +11,8 @@ builder.Services.AddApplicationDbContext(builder.Configuration);
 builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddApplicationService();
 builder.Services.AddStripeSettings(builder.Configuration);
-var stripeSettings = builder.Configuration.GetSection("Stripe").Get<StripeSettings>();
-StripeConfiguration.ApiKey = stripeSettings?.SecretKey ?? throw new Exception("Stripe Secret Key is missing!");
+//var stripeSettings = builder.Configuration.GetSection("Stripe").Get<StripeSettings>();
+//StripeConfiguration.ApiKey = stripeSettings?.SecretKey ?? throw new Exception("Stripe Secret Key is missing!");
 
 var app = builder.Build();
 
@@ -31,16 +31,6 @@ app.UseStaticFiles();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 app.UseRouting();
-//show routing 
-//app.Use(async (context, next) =>
-//{
-//    var endpoint = context.GetEndpoint();
-//Console.WriteLine("==--=============================================================================");
-//Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
-//Console.WriteLine("==--=============================================================================");
-//await next();
-//});
-
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapRazorPages();
