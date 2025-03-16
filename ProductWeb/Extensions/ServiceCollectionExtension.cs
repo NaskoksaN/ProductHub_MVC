@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using ProductHub.DataAccess.Data;
+using ProductHub.Utility;
 using ProductHub.Utility.Interface;
 using ProductHub.Utility.Service;
 
@@ -57,6 +58,12 @@ namespace Microsoft.Extensions.DependencyInjection
 
             });
 
+            return services;
+        }
+
+        public static IServiceCollection AddStripeSettings(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.Configure<StripeSettings>(configuration.GetSection("Stripe"));
             return services;
         }
 
