@@ -176,8 +176,15 @@ namespace ProductHubWeb.Areas.Customer.Controllers
         public async Task<IActionResult> OrderConfirmation(int id)
         {
             OrderHeader orderHeader = await unitOfWork.OrderHeaderService.GetAsync(u => u.Id == id, includeProperties:"ApplicationUser");
-            
-            if(orderHeader.PaymentStatus!= StatusConstants.PaymentStatusDelayedPayment)
+
+            //here tilli fix stripe error
+            IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
+                                            .ShopingCartService
+                                            .GetAllAsync(u => u.ApplicationUserId == orderHeader.ApplicationUserId);
+            unitOfWork.ShopingCartService.RemoveRange(shopiningCarts);
+            await unitOfWork.SaveAsync();
+
+            if (orderHeader.PaymentStatus!= StatusConstants.PaymentStatusDelayedPayment)
             {
                 var service = new SessionService();
                 Session session = service.Get(orderHeader.SeesionId);
@@ -189,11 +196,12 @@ namespace ProductHubWeb.Areas.Customer.Controllers
                 }
                
             }
-            IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
-                                            .ShopingCartService
-                                            .GetAllAsync(u => u.ApplicationUserId == orderHeader.ApplicationUserId) ;
-            unitOfWork.ShopingCartService.RemoveRange(shopiningCarts);
-            await unitOfWork.SaveAsync();
+            //becouse of stripe error
+            //IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
+            //                                .ShopingCartService
+            //                                .GetAllAsync(u => u.ApplicationUserId == orderHeader.ApplicationUserId);
+            //unitOfWork.ShopingCartService.RemoveRange(shopiningCarts);
+            //await unitOfWork.SaveAsync();
 
             return View(id);
         }
