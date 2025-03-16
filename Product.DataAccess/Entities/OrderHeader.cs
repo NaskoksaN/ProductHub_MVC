@@ -47,6 +47,8 @@ namespace ProductHub.DataAccess.Entities
         [Comment("Payment DueDate")]
         public DateOnly PaymentDueDate { get; set; }
 
+        public string? SeesionId {  get; set; }
+
         [Comment("Payment IntentId")]
         public string? PaymentIntentId { get; set; }
 
