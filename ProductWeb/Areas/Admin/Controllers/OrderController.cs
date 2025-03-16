@@ -5,6 +5,8 @@ using ProductHub.Models.Constants;
 using ProductHub.Utility.Interface;
 using ProductHub.Utility.ViewModels.Order;
 using ProductHubWeb.Areas.Customer.Controllers;
+using Stripe;
+using Stripe.Checkout;
 using System.Security.Claims;
 
 namespace ProductHubWeb.Areas.Admin.Controllers
@@ -88,6 +90,148 @@ namespace ProductHubWeb.Areas.Admin.Controllers
             TempData["Success"] = "Order Details Updated Successfully";
 
             return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SDRoles.Role_Admin + "," + SDRoles.Role_Employee)]
+        public async Task<IActionResult> ShipOrder()
+        {
+            var orderHeader = await unitOfWork
+                                    .OrderHeaderService
+                                    .GetAsync(u=>u.Id==OrderVM.OrderHeader.Id);
+            orderHeader.TrackingNumber= OrderVM.OrderHeader.TrackingNumber;
+            orderHeader.Carrier=OrderVM.OrderHeader.Carrier;
+            orderHeader.OrderStatus= OrderVM.OrderHeader.OrderStatus;
+            orderHeader.ShippingDate=DateTime.Now;
+            if(orderHeader.PaymentStatus==StatusConstants.PaymentStatusDelayedPayment)
+            {
+                orderHeader.PaymentDueDate=DateOnly.FromDateTime(DateTime.Now.AddDays(30));
+            }
+
+            unitOfWork.OrderHeaderService.Update(orderHeader);
+            await unitOfWork.SaveAsync();
+
+            await unitOfWork
+                    .OrderHeaderService
+                    .UpdateStatus(OrderVM.OrderHeader.Id, StatusConstants.StatusShipped);
+            await unitOfWork.SaveAsync();
+
+            TempData["Success"] = "Order Details Ship Successfully";
+
+            return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = SDRoles.Role_Admin + "," + SDRoles.Role_Employee)]
+        public async Task<IActionResult> CancelOrder()
+        {
+            var orderHeader = await unitOfWork
+                                    .OrderHeaderService
+                                    .GetAsync(u => u.Id == OrderVM.OrderHeader.Id);
+
+            if (orderHeader.PaymentStatus == StatusConstants.PaymentStatusApproved)
+            {
+                //give refund via stripe to customer
+                var options = new RefundCreateOptions
+                {
+                    Reason = RefundReasons.RequestedByCustomer,
+                    PaymentIntent = orderHeader.PaymentIntentId,
+                };
+                var service = new RefundService();
+                //becouse os stripe error
+                // Refund refund = service.Create(options);
+
+                await unitOfWork
+                      .OrderHeaderService
+                      .UpdateStatus(orderHeader.Id, StatusConstants.StatusCancelled, StatusConstants.StatusRefunded);
+                
+            }
+            else
+            {
+                await unitOfWork
+                      .OrderHeaderService
+                      .UpdateStatus(orderHeader.Id, StatusConstants.StatusCancelled, StatusConstants.StatusCancelled);
+            }
+
+            await unitOfWork.SaveAsync();
+
+            TempData["Success"] = "Order Canceled Successfully";
+
+            return RedirectToAction(nameof(Details), new { orderId = OrderVM.OrderHeader.Id });
+
+            
+        }
+
+        [ActionName("Details")]
+        [HttpPost]
+        public async Task<IActionResult> Details_PAY_NOW()
+        {
+
+            OrderVM.OrderHeader = await unitOfWork
+                            .OrderHeaderService
+                            .GetAsync(u => u.Id == OrderVM.OrderHeader.Id, includeProperties: "ApplicationUser");
+            OrderVM.OrderDetail = await unitOfWork
+                            .OrderDetailService
+                            .GetAllAsync(u => u.OrderHeaderId == OrderVM.OrderHeader.Id, includeProperties: "Product");
+            //stripe logic
+            var domainUrl = "https://localhost:7210/";
+            var options = new Stripe.Checkout.SessionCreateOptions
+            {
+                SuccessUrl = domainUrl + $"admin/order/PaymentConfirmation?orderHeaderId={OrderVM.OrderHeader.Id}",
+                CancelUrl = domainUrl + $"admin/order/details?orderId={OrderVM.OrderHeader.Id}",
+                LineItems = new List<Stripe.Checkout.SessionLineItemOptions>(),
+                Mode = "payment",
+            };
+
+            foreach (var item in OrderVM.OrderDetail)
+            {
+                var sessionLineItem = new SessionLineItemOptions
+                {
+                    PriceData = new SessionLineItemPriceDataOptions
+                    {
+                        UnitAmount = (long)(item.Price * 100),
+                        Currency = "eur",
+                        ProductData = new SessionLineItemPriceDataProductDataOptions
+                        {
+                            Name = item.Product.Name,
+                        }
+                    },
+                    Quantity = item.Count
+                };
+                options.LineItems.Add(sessionLineItem);
+            }
+
+            var service = new Stripe.Checkout.SessionService();
+            Session session = service.Create(options);
+
+            await unitOfWork.OrderHeaderService.UpdateStripePaymentId(OrderVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
+            await unitOfWork.SaveAsync();
+
+            Response.Headers.Add("Location", session.Url);
+            return new StatusCodeResult(303);
+
+        }
+
+        public async Task<IActionResult> PaymentConfirmation(int orderHeaderId)
+        {
+            OrderHeader orderHeader = await unitOfWork
+                            .OrderHeaderService
+                            .GetAsync(u => u.Id == orderHeaderId, includeProperties: "ApplicationUser");
+
+            if (orderHeader.PaymentStatus == StatusConstants.PaymentStatusDelayedPayment)
+            {
+                var service = new SessionService();
+                Session session = service.Get(orderHeader.SeesionId);
+                if (session.PaymentStatus.ToLower() == "paid")
+                {
+                    await unitOfWork.OrderHeaderService.UpdateStripePaymentId(orderHeaderId, session.Id, session.PaymentIntentId);
+                    await unitOfWork.OrderHeaderService.UpdateStatus(orderHeaderId, orderHeader.OrderStatus, StatusConstants.PaymentStatusApproved);
+                    await unitOfWork.SaveAsync();
+                }
+
+            }
+
+            return View(orderHeaderId);
         }
 
 
