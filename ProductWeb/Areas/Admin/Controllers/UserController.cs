@@ -3,8 +3,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductHub.DataAccess.Entities;
+using ProductHub.Models.Constants;
 using ProductHub.Utility.Interface;
-using ProductHub.Utility.Service;
 using ProductHub.Utility.ViewModels.User;
 using ProductHubWeb.Areas.Customer.Controllers;
 using static ProductHub.Models.Constants.SDRoles;
@@ -38,12 +38,89 @@ namespace ProductHubWeb.Areas.Admin.Controllers
             return View();
         }
 
-        public async Task<IActionResult> RoleManagement(string userId)
+        [HttpGet]
+        public async Task<IActionResult> RoleManagment(string userId)
         {
-           
-            return View();
+            var user = await unitOfWork
+                    .ApplicationUserRepository
+                    .GetAsync(u => u.Id == userId, includeProperties:"Company");
+            var objjRolesList = roleManager.Roles.Select(i=> new SelectListItem
+            {
+                Text = i.Name,
+                Value=i.Name,
+            });
+            var companyList = await unitOfWork
+                    .CompanyService
+                    .GetAllAsync();
+
+            var companySelectList = companyList.Select(i => new SelectListItem
+            {
+                Text = i.Name,      
+                Value = i.Id.ToString() 
+            }).ToList();
+
+
+            RoleManagementVM roleManagementVM = new RoleManagementVM()
+            {
+                ApplicationUser = user,
+                RoleList = objjRolesList,
+                CompanyList = companySelectList,
+            };
+
+            var currentUser = await unitOfWork.ApplicationUserRepository.GetAsync(u=>u.Id==userId);
+            roleManagementVM.ApplicationUser.Role = userManager
+                                                .GetRolesAsync(currentUser)
+                                                .GetAwaiter()
+                                                .GetResult().FirstOrDefault();
+
+            return View(roleManagementVM);
         }
-        
+
+        [HttpPost]
+        public async Task<IActionResult> RoleManagment(RoleManagementVM roleVM)
+        {
+
+            ApplicationUser currentUser = await unitOfWork
+                    .ApplicationUserRepository
+                    .GetAsync(u => u.Id == roleVM.ApplicationUser.Id);
+            string oldRole = userManager
+                             .GetRolesAsync(currentUser)
+                             .GetAwaiter()
+                             .GetResult().FirstOrDefault();
+
+            if (!(roleVM.ApplicationUser.Role == oldRole))
+            {
+                if (roleVM.ApplicationUser.Role == SDRoles.Role_Company)
+                {
+                    currentUser.CompanyId = roleVM.ApplicationUser.CompanyId;
+                }
+                if (oldRole == SDRoles.Role_Company)
+                {
+                    currentUser.CompanyId = null;
+                }
+
+                unitOfWork.ApplicationUserRepository.Update(currentUser);
+                await unitOfWork.SaveAsync();
+
+                await userManager
+                        .RemoveFromRoleAsync(currentUser, oldRole);
+                await userManager
+                        .AddToRoleAsync(currentUser,roleVM.ApplicationUser.Role);
+            }
+            else
+            {
+                if(oldRole==SDRoles.Role_Company && currentUser.CompanyId != roleVM.ApplicationUser.CompanyId)
+                {
+                    currentUser.CompanyId = roleVM.ApplicationUser.CompanyId;
+                    unitOfWork.ApplicationUserRepository.Update(currentUser);
+                    await unitOfWork.SaveAsync();
+                }
+            }
+
+
+            return RedirectToAction("Index");
+        }
+
 
         #region API CALLS
 
