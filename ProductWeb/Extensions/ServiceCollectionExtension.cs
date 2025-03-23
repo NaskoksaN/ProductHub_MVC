@@ -67,5 +67,19 @@ namespace Microsoft.Extensions.DependencyInjection
             return services;
         }
 
+        public static IServiceCollection AddFacebookAuthentication(this IServiceCollection services, IConfiguration configuration)
+        {
+            var facebookSettings = configuration.GetSection("Facebook");
+
+            services.AddAuthentication()
+                .AddFacebook(options =>
+                {
+                    options.AppId = facebookSettings["AppId"];
+                    options.AppSecret = facebookSettings["AppSecret"];
+                });
+
+            return services;
+        }
+
     }
 }
