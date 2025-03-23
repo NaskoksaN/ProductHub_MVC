@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using ProductHub.DataAccess.Entities;
+using ProductHub.Models.Constants;
 using ProductHub.Utility.Interface;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -130,13 +132,13 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
 
         public async Task OnGetAsync(string returnUrl = null)
         {
-            if (!_roleManager.RoleExistsAsync(Role_Customer).GetAwaiter().GetResult())
-            {
-                _roleManager.CreateAsync(new IdentityRole(Role_Customer)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Role_Employee)).GetAwaiter().GetResult();
-                await _roleManager.CreateAsync(new IdentityRole(Role_Company));
-                await _roleManager.CreateAsync(new IdentityRole(Role_Admin));
-            }
+            //if (!_roleManager.RoleExistsAsync(Role_Customer).GetAwaiter().GetResult())
+            //{
+            //    _roleManager.CreateAsync(new IdentityRole(Role_Customer)).GetAwaiter().GetResult();
+            //    _roleManager.CreateAsync(new IdentityRole(Role_Employee)).GetAwaiter().GetResult();
+            //    await _roleManager.CreateAsync(new IdentityRole(Role_Company));
+            //    await _roleManager.CreateAsync(new IdentityRole(Role_Admin));
+            //}
             Input = new()
             {
                 RoleList = _roleManager
@@ -206,8 +208,8 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    //await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                    //    $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -215,7 +217,15 @@ namespace ProductHubWeb.Areas.Identity.Pages.Account
                     }
                     else
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        if(User.IsInRole(SDRoles.Role_Admin))
+                        {
+                            TempData["success"] = "New User Created Successefulley";
+                        }
+                        else
+                        {
+                            await _signInManager.SignInAsync(user, isPersistent: false);
+                        }
+                            
                         return LocalRedirect(returnUrl);
                     }
                 }
