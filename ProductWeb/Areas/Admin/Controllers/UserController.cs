@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using ProductHub.DataAccess.Entities;
 using ProductHub.Utility.Interface;
 using ProductHub.Utility.Service;
+using ProductHub.Utility.ViewModels.User;
 using ProductHubWeb.Areas.Customer.Controllers;
 using static ProductHub.Models.Constants.SDRoles;
 
@@ -14,14 +17,17 @@ namespace ProductHubWeb.Areas.Admin.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly IUnitOfWork unitOfWork;
-        private readonly IWebHostEnvironment webHostEnvironment;
+        private readonly UserManager<IdentityUser> userManager;
+        private readonly RoleManager<IdentityRole> roleManager;
         public UserController(ILogger<HomeController> logger, 
                 IUnitOfWork _unitOfWork,
-                IWebHostEnvironment _webHostEnvironment)
+                UserManager<IdentityUser> _userManager,
+                RoleManager<IdentityRole> _roleManager)
         {
             _logger = logger;
             unitOfWork = _unitOfWork;
-            webHostEnvironment = _webHostEnvironment;
+            userManager= _userManager;
+            roleManager= _roleManager;
         }
 
         [HttpGet]
@@ -34,7 +40,7 @@ namespace ProductHubWeb.Areas.Admin.Controllers
 
         public async Task<IActionResult> RoleManagement(string userId)
         {
-
+           
             return View();
         }
         
@@ -47,14 +53,18 @@ namespace ProductHubWeb.Areas.Admin.Controllers
             IEnumerable<ApplicationUser> userList = await unitOfWork
                                             .ApplicationUserRepository
                                             .GetAllAsync(includeProperties:"Company");
-            foreach(var user in userList)
+
+            
+            foreach (var user in userList)
             {
+                var roles = await userManager.GetRolesAsync(user);
+                user.Role = roles.FirstOrDefault();
+
                 if (user.Company==null)
                 {
                     user.Company = new() { Name = "" };
                 }
             }
-
             return Json(new {data= userList });
         }
 
