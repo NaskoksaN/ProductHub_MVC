@@ -12,6 +12,9 @@ namespace ProductHub.Utility.Service
         {
             db = _db;
         }
-       
+        public void Update(ApplicationUser applicationUser)
+        {
+            db.ApplicationUsers.Update(applicationUser);
+        }
     }
 }

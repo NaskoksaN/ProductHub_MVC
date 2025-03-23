@@ -5,6 +5,6 @@ namespace ProductHub.Utility.Interface
 {
     public interface IApplicationUserRepository : ISqlRepository<ApplicationUser>
     {
-       
+        public void Update(ApplicationUser applicationUser);
     }
 }
