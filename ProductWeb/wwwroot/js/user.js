@@ -10,9 +10,9 @@ function loadDataTable() {
         "columns": [
             { "data": "name", "width": "20%" },
             { "data": "email", "width": "15%" },
-            { "data": "phoneNumber", "width": "10%" },
+            { "data": "phoneNumber", "width": "15%" },
             { "data": "company.name", "width": "15%" },
-            { "data": "role", "width": "15%" },
+            { "data": "role", "width": "10%" },
             {
                 data: { id: "id", lockoutEnd: "lockoutEnd" },
                 "render": function (data) {
@@ -43,9 +43,8 @@ function loadDataTable() {
                         </div>
                     `
                     }
-
                 },
-                "width": "20%"
+                "width": "25%"
             }
         ]
     });
