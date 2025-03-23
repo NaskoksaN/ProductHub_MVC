@@ -29,5 +29,9 @@ namespace ProductHub.DataAccess.Entities
         public int? CompanyId {  get; set; }
         [ForeignKey(nameof(CompanyId))]
         public Company? Company { get; set; }
+
+
+        [NotMapped]
+        public string Role {  get; set; }
     }
 }
