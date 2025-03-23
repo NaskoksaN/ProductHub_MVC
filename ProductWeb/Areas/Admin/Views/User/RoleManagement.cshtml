@@ -1,5 +1,9 @@
 ﻿@model RoleManagementVM
 
+@{
+    var companyVisible = "display:none;";
+}
+
 <div class="card shadow border-0 mt-4">
     <div class="card-header bg-secondary bg-gradient ml-0 py-3">
     <div class="row">
@@ -20,9 +24,7 @@
                 <div class="form-floating py-2 col-12">
                     <select asp-for="ApplicationUser.Role" asp-items="@Model.RoleList" class="form-select"></select>
                 </div>
-                @{
-                    var companyVisible = "display:none;";
-                }
+               
                 @if (Model.ApplicationUser.Role == SDRoles.Role_Company) {
                     companyVisible = "display:block;";
                 }

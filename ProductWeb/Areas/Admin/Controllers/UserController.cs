@@ -39,7 +39,7 @@ namespace ProductHubWeb.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> RoleManagment(string userId)
+        public async Task<IActionResult> RoleManagement(string userId)
         {
             var user = await unitOfWork
                     .ApplicationUserRepository
@@ -77,7 +77,7 @@ namespace ProductHubWeb.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> RoleManagment(RoleManagementVM roleVM)
+        public async Task<IActionResult> RoleManagement(RoleManagementVM roleVM)
         {
 
             ApplicationUser currentUser = await unitOfWork
