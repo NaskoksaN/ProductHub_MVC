@@ -39,7 +39,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.
                 AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
-                    options.SignIn.RequireConfirmedAccount = true;
+                    options.SignIn.RequireConfirmedAccount = false;
 
                     //only fo development
                     options.Password.RequireNonAlphanumeric = false;
