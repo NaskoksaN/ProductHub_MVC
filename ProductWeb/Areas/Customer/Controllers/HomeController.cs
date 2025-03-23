@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using ProductHub.DataAccess.Entities;
 using ProductHub.Models;
+using ProductHub.Models.Constants;
 using ProductHub.Utility.Interface;
 using ProductHub.Utility.ViewModels.ShopingCart;
 using System.Diagnostics;
@@ -26,6 +28,8 @@ namespace ProductHubWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> Index()
         {
+            
+
             IEnumerable<Product> productList = await unitOfWork
                                        .ProductService
                                        .GetAllAsync(includeProperties:"Category");
@@ -64,6 +68,7 @@ namespace ProductHubWeb.Areas.Customer.Controllers
             {
                 cartFromDb.Count+=shopingCartFormModel.Count;
                 unitOfWork.ShopingCartService.Update(cartFromDb);
+                await unitOfWork.SaveAsync();
             }
             else
             {
@@ -75,10 +80,16 @@ namespace ProductHubWeb.Areas.Customer.Controllers
                     
                 };
                 await unitOfWork.ShopingCartService.AddAsync(shopingCart);
+
+                //var cartCount = await unitOfWork.ShopingCartService
+                //                    .GetAllAsync(u => u.ApplicationUserId == userId);
+                await unitOfWork.SaveAsync();
+
+                //HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, cartCount.Count());
             }
 
            
-            await unitOfWork.SaveAsync();
+            //await unitOfWork.SaveAsync();
             TempData["success"] = CartSuccessMsg;
 
             return RedirectToAction(nameof(Index));

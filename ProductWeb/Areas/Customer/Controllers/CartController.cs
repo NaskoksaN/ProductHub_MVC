@@ -194,7 +194,7 @@ namespace ProductHubWeb.Areas.Customer.Controllers
                     await unitOfWork.OrderHeaderService.UpdateStatus(id, StatusConstants.StatusApproved, StatusConstants.PaymentStatusApproved);
                     await unitOfWork.SaveAsync();
                 }
-               
+                HttpContext.Session.Clear();
             }
             //becouse of stripe error
             //IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
@@ -217,9 +217,18 @@ namespace ProductHubWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> MinusProduct(int cartId)
         {
-            var cartFormDb = await unitOfWork.ShopingCartService.GetAsync(u => u.Id == cartId);
+            var cartFormDb = await unitOfWork
+                            .ShopingCartService
+                            .GetAsync(u => u.Id == cartId, tracked:true);
+
             if (cartFormDb.Count <= 1)
             {
+                //var cartCount = await unitOfWork
+                //                .ShopingCartService
+                //                .GetAllAsync(u => u.ApplicationUserId == cartFormDb.ApplicationUser.Id);
+                //HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, cartCount.Count() - 1);
+
+
                 unitOfWork.ShopingCartService.Remove(cartFormDb);
             }
             else
@@ -235,7 +244,13 @@ namespace ProductHubWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> RemoveProduct(int cartId)
         {
-            var cartFormDb = await unitOfWork.ShopingCartService.GetAsync(u => u.Id == cartId);
+            var cartFormDb = await unitOfWork.ShopingCartService.GetAsync(u => u.Id == cartId, tracked:true);
+
+            //var cartCount = await unitOfWork
+            //                    .ShopingCartService
+            //                    .GetAllAsync(u => u.ApplicationUserId == cartFormDb.ApplicationUser.Id);
+            //HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, cartCount.Count()-1);
+
             unitOfWork.ShopingCartService.Remove(cartFormDb);
             await unitOfWork.SaveAsync();
 
