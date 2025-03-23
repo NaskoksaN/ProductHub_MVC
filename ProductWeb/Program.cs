@@ -12,12 +12,7 @@ builder.Services.AddApplicationDbContext(builder.Configuration);
 builder.Services.AddApplicationIdentity(builder.Configuration);
 builder.Services.AddApplicationService();
 builder.Services.AddStripeSettings(builder.Configuration);
-
-builder.Services.AddAuthentication().AddFacebook(options =>
-{
-    options.AppId = "533596542730967";
-    options.AppSecret = "e501e2765a3a3461560fa9372f2870ff";
-});
+builder.Services.AddFacebookAuthentication(builder.Configuration);
 
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
