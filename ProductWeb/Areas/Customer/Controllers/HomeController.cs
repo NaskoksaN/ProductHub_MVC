@@ -5,6 +5,7 @@ using ProductHub.DataAccess.Entities;
 using ProductHub.Models;
 using ProductHub.Models.Constants;
 using ProductHub.Utility.Interface;
+using ProductHub.Utility.Service;
 using ProductHub.Utility.ViewModels.ShopingCart;
 using System.Diagnostics;
 using System.Security.Claims;
@@ -80,16 +81,17 @@ namespace ProductHubWeb.Areas.Customer.Controllers
                     
                 };
                 await unitOfWork.ShopingCartService.AddAsync(shopingCart);
-
-                //var cartCount = await unitOfWork.ShopingCartService
-                //                    .GetAllAsync(u => u.ApplicationUserId == userId);
+                
                 await unitOfWork.SaveAsync();
 
-                //HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, cartCount.Count());
+                int count = unitOfWork.ShopingCartService.GetAllAsync(u => u.ApplicationUserId == userId)
+                        .GetAwaiter().GetResult().Count();
+                HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart,
+                        count);
+                
+
             }
 
-           
-            //await unitOfWork.SaveAsync();
             TempData["success"] = CartSuccessMsg;
 
             return RedirectToAction(nameof(Index));
