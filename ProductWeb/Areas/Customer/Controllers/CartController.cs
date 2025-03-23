@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using ProductHub.DataAccess.Entities;
 using ProductHub.Models.Constants;
 using ProductHub.Utility.Interface;
+using ProductHub.Utility.Service;
 using ProductHub.Utility.ViewModels.ShopingCart;
 using Stripe.Checkout;
 using System.Security.Claims;
@@ -129,44 +130,51 @@ namespace ProductHubWeb.Areas.Customer.Controllers
                 await unitOfWork.OrderDetailService.AddAsync(orderDetail);
                 await unitOfWork.SaveAsync();
             }
+
             if (applicationUser.CompanyId.GetValueOrDefault() == 0)
             {
                 // regular user, we need payment
                 //stripe log
-                var domainUrl = "https://localhost:7210/";
+
+                var domainUrl = Request.Scheme + "://" + Request.Host.Value + "/";
                 var options = new Stripe.Checkout.SessionCreateOptions
                 {
-                    SuccessUrl = domainUrl+$"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
-                    CancelUrl = domainUrl+ "customer/cart/Index",
+                    SuccessUrl = domainUrl + $"customer/cart/OrderConfirmation?id={ShoppingCartVM.OrderHeader.Id}",
+                    CancelUrl = domainUrl + "customer/cart/index",
                     LineItems = new List<Stripe.Checkout.SessionLineItemOptions>(),
                     Mode = "payment",
                 };
 
-                foreach(var item in ShoppingCartVM.ShopingCartList)
+                foreach (var item in ShoppingCartVM.ShopingCartList)
                 {
                     var sessionLineItem = new SessionLineItemOptions
                     {
                         PriceData = new SessionLineItemPriceDataOptions
                         {
-                            UnitAmount=(long)(item.Price*100),
-                            Currency="eur",
-                            ProductData=new SessionLineItemPriceDataProductDataOptions
+                            UnitAmount = (long)(item.Price * 100),
+                            Currency = "eur",
+                            ProductData = new SessionLineItemPriceDataProductDataOptions
                             {
-                                Name=item.Product.Name,
+                                Name = item.Product.Name,
                             }
                         },
-                        Quantity=item.Count
+                        Quantity = item.Count
                     };
                     options.LineItems.Add(sessionLineItem);
                 }
 
-                var service = new Stripe.Checkout.SessionService();
+                //var service = new Stripe.Checkout.SessionService();
+                //Session session = service.Create(options);
+
+                var service = new SessionService();
                 Session session = service.Create(options);
 
                 await unitOfWork.OrderHeaderService.UpdateStripePaymentId(ShoppingCartVM.OrderHeader.Id, session.Id, session.PaymentIntentId);
                 await unitOfWork.SaveAsync();
 
                 Response.Headers.Add("Location", session.Url);
+
+
                 return new StatusCodeResult(303);
             }
 
@@ -176,13 +184,6 @@ namespace ProductHubWeb.Areas.Customer.Controllers
         public async Task<IActionResult> OrderConfirmation(int id)
         {
             OrderHeader orderHeader = await unitOfWork.OrderHeaderService.GetAsync(u => u.Id == id, includeProperties:"ApplicationUser");
-
-            //here tilli fix stripe error
-            IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
-                                            .ShopingCartService
-                                            .GetAllAsync(u => u.ApplicationUserId == orderHeader.ApplicationUserId);
-            unitOfWork.ShopingCartService.RemoveRange(shopiningCarts);
-            await unitOfWork.SaveAsync();
 
             if (orderHeader.PaymentStatus!= StatusConstants.PaymentStatusDelayedPayment)
             {
@@ -196,12 +197,12 @@ namespace ProductHubWeb.Areas.Customer.Controllers
                 }
                 HttpContext.Session.Clear();
             }
-            //becouse of stripe error
-            //IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
-            //                                .ShopingCartService
-            //                                .GetAllAsync(u => u.ApplicationUserId == orderHeader.ApplicationUserId);
-            //unitOfWork.ShopingCartService.RemoveRange(shopiningCarts);
-            //await unitOfWork.SaveAsync();
+           
+            IEnumerable<ShopingCart> shopiningCarts = await unitOfWork
+                                            .ShopingCartService
+                                            .GetAllAsync(u => u.ApplicationUserId == orderHeader.ApplicationUserId);
+            unitOfWork.ShopingCartService.RemoveRange(shopiningCarts);
+            await unitOfWork.SaveAsync();
 
             return View(id);
         }
@@ -223,11 +224,10 @@ namespace ProductHubWeb.Areas.Customer.Controllers
 
             if (cartFormDb.Count <= 1)
             {
-                //var cartCount = await unitOfWork
-                //                .ShopingCartService
-                //                .GetAllAsync(u => u.ApplicationUserId == cartFormDb.ApplicationUser.Id);
-                //HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, cartCount.Count() - 1);
+                var cartFromDb = await unitOfWork.ShopingCartService.GetAsync(u => u.Id == cartId, tracked: true);
 
+                HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, unitOfWork.ShopingCartService
+                  .GetAllAsync(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).GetAwaiter().GetResult().Count() - 1);
 
                 unitOfWork.ShopingCartService.Remove(cartFormDb);
             }
@@ -244,14 +244,12 @@ namespace ProductHubWeb.Areas.Customer.Controllers
 
         public async Task<IActionResult> RemoveProduct(int cartId)
         {
-            var cartFormDb = await unitOfWork.ShopingCartService.GetAsync(u => u.Id == cartId, tracked:true);
+            var cartFromDb = await unitOfWork.ShopingCartService.GetAsync(u => u.Id == cartId, tracked:true);
 
-            //var cartCount = await unitOfWork
-            //                    .ShopingCartService
-            //                    .GetAllAsync(u => u.ApplicationUserId == cartFormDb.ApplicationUser.Id);
-            //HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, cartCount.Count()-1);
+            HttpContext.Session.SetInt32(SessionConstants.SessionShoppingCart, unitOfWork.ShopingCartService
+              .GetAllAsync(u => u.ApplicationUserId == cartFromDb.ApplicationUserId).GetAwaiter().GetResult().Count() - 1);
 
-            unitOfWork.ShopingCartService.Remove(cartFormDb);
+            unitOfWork.ShopingCartService.Remove(cartFromDb);
             await unitOfWork.SaveAsync();
 
             return RedirectToAction(nameof(Index));
