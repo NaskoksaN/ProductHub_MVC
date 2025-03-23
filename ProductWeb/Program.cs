@@ -44,6 +44,16 @@ app.UseStaticFiles();
 StripeConfiguration.ApiKey = builder.Configuration.GetSection("Stripe:SecretKey").Get<string>();
 
 app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    var endpoint = context.GetEndpoint();
+    Console.WriteLine("==--=============================================================================");
+    Console.WriteLine($"Request for {context.Request.Path} to endpoint: {endpoint?.DisplayName}");
+    Console.WriteLine("==--=============================================================================");
+    await next();
+});
+
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSession();
