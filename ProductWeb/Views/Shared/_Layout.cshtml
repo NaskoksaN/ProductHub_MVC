@@ -89,15 +89,28 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <!-- <main role="main" class="pb-5"> -->
+        <main role="main" style="padding-bottom:6rem;">
             <partial name="_Notification" />
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer bg-primary text-muted">
+    <!-- <footer class="border-top footer bg-primary text-white">
         <div class="container text-center">
             &copy; @DateTime.Now.Year <i class="bi bi-signpost-2"></i>  Nasko Bobchev
+        </div>
+    </footer> -->
+
+    <footer class="border-top footer bg-primary text-white">
+        <div class="container text-center">
+            &copy; @DateTime.Now.Year
+            <i class="bi bi-signpost-2"></i> Nasko Bobchev
+
+            <!-- LinkedIn Icon Link -->
+            <a href="https://www.linkedin.com/in/atanas-bobchev-62a99b289/" target="_blank" rel="noopener" class="text-white ms-2" title="LinkedIn">
+                <i class="bi bi-linkedin"></i>
+            </a>
         </div>
     </footer>
    
